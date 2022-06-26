@@ -87,7 +87,7 @@ public class Main {
 
     }
 
-    public static File creationDirectory(String path, StringBuilder feedback) {
+    private static File creationDirectory(String path, StringBuilder feedback) {
         File directory = new File(path);
         if (directory.mkdir()) {
             feedback.append("Каталог " + directory.getName() + " создан \n");
@@ -96,7 +96,7 @@ public class Main {
         return directory;
     }
 
-    public static File creationFile(String path, StringBuilder feedback) {
+    private static File creationFile(String path, StringBuilder feedback) {
         File file = new File(path);
         try {
             if (file.createNewFile()) {
@@ -109,7 +109,7 @@ public class Main {
         return file;
     }
 
-    public static void saveGame(String path, GameProgress version) {
+    private static void saveGame(String path, GameProgress version) {
         try (FileOutputStream fis = new FileOutputStream(path);
             ObjectOutputStream oos = new ObjectOutputStream(fis)) {
             oos.writeObject(version);
@@ -118,7 +118,7 @@ public class Main {
         }
     }
 
-    public static void zipFiles(String path, List<File> files) {
+    private static void zipFiles(String path, List<File> files) {
         try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(path))) {
             for (File file : files) {
                 try (FileInputStream fis = new FileInputStream(file.getPath())) {
@@ -137,7 +137,7 @@ public class Main {
         }
     }
 
-    public static void delitingFiles (File file) {
+    private static void delitingFiles (File file) {
         if (file.delete()) {
             System.out.println("Файл " + file.getName() +  " удален");
         }
@@ -167,7 +167,7 @@ public class Main {
         }
     }
 
-    public static void deSerialization(String name, GameProgress gameProgress) {
+    private static void deSerialization(String name, GameProgress gameProgress) {
         try (FileInputStream fis = new FileInputStream(name)) {
             ObjectInputStream ois = new ObjectInputStream(fis);
             gameProgress = (GameProgress) ois.readObject();
