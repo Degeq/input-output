@@ -8,44 +8,35 @@ import java.util.zip.ZipOutputStream;
 public class Main {
 
     public static void main(String[] args) {
-        File games = new File("C://Games");
         StringBuilder feedback = new StringBuilder();
+        String initDirectory = "C:" + File.separator + File.separator +"Games";
+        File games = creationDirectory(initDirectory, feedback);
 
-        creationDirectory(games, feedback);
+        File temp = creationDirectory(initDirectory + File.separator + "temp", feedback);
+        File file3 = creationFile(initDirectory + File.separator + "temp"
+                + File.separator + "temp.txt", feedback);
 
-        File temp = new File("C://Games/temp");
-        File file3 = new File(temp,"temp.txt");
+        String srcFolder = initDirectory + File.separator + "src";
+        String savegamesFolder = initDirectory + File.separator + "savegames";
+        String resFolder = initDirectory + File.separator + "res";
 
-        creationDirectory(temp, feedback);
-        creationFile(file3, feedback);
+        File src = creationDirectory(srcFolder, feedback);
+        File res = creationDirectory(initDirectory + File.separator + "res", feedback);
+        File savegames = creationDirectory(savegamesFolder, feedback);
 
-        File src = new File("C://Games/src");
-        File res = new File("C://Games/res");
-        File savegames = new File("C://Games/savegames");
 
-        creationDirectory(src, feedback);
-        creationDirectory(res, feedback);
-        creationDirectory(savegames, feedback);
+        File main = creationDirectory(srcFolder + File.separator +"main", feedback);
+        File test = creationDirectory(srcFolder + File.separator + "test", feedback);
 
-        File main = new File("C://Games/src/main");
-        File test = new File("C://Games/src/test");
+        String mainFolder = srcFolder + File.separator;
+        File file1 = creationFile(mainFolder + "Main.java", feedback);
+        File file2 = creationFile(mainFolder + "Utils.java", feedback);
 
-        creationDirectory(main, feedback);
-        creationDirectory(test, feedback);
+        String resContain = resFolder + File.separator;
 
-        File file1 = new File(main,"Main.java");
-        File file2 = new File(main,"Utils.java");
-
-        creationFile(file1, feedback);
-        creationFile(file2, feedback);
-
-        File drawables = new File("C://Games/res/drawables");
-        File vectors = new File("C://Games/res/vectors");
-        File icons = new File("C://Games/res/icons");
-
-        creationDirectory(drawables, feedback);
-        creationDirectory(vectors, feedback);
-        creationDirectory(icons, feedback);
+        File drawables = creationDirectory(resContain + "drawables", feedback);
+        File vectors = creationDirectory(resContain + "vectors",feedback);
+        File icons = creationDirectory(resContain + "icons", feedback);
 
         String[] created = feedback.toString().split("\n");
 
@@ -65,17 +56,14 @@ public class Main {
         GameProgress game2 = new GameProgress(86, 3, 80, 345);
         GameProgress game3 = new GameProgress(94, 524, 76, 44);
 
-        File save1 = new File("C://Games/savegames/save1.dat");
-        creationFile(save1, feedback);
-        saveGame("C://Games/savegames/save1.dat", game1);
+        File save1 = creationFile(savegamesFolder + File.separator + "save1.dat", feedback);
+        saveGame(save1.getPath(), game1);
 
-        File save2 = new File("C://Games/savegames/save2.dat");
-        creationFile(save2, feedback);
-        saveGame("C://Games/savegames/save2.dat", game2);
+        File save2 = creationFile(savegamesFolder + File.separator + "save2.dat", feedback);
+        saveGame(save2.getPath(), game2);
 
-        File save3 = new File("C://Games/savegames/save3.dat");
-        creationFile(save3, feedback);
-        saveGame("C://Games/savegames/save3.dat", game3);
+        File save3 = creationFile(savegamesFolder + File.separator + "save3.dat", feedback);
+        saveGame(save3.getPath(), game3);
 
         List<File> savedVersions = new ArrayList<>();
 
@@ -83,9 +71,7 @@ public class Main {
         savedVersions.add(save2);
         savedVersions.add(save3);
 
-        File zipedVersions = new File("C://Games/savegames/packed_versions.zip");
-
-        creationFile(zipedVersions, feedback);
+        File zipedVersions = creationFile(savegamesFolder + File.separator + "packed_versions.zip", feedback);
 
         zipFiles(zipedVersions.getPath(), savedVersions);
 
@@ -97,26 +83,30 @@ public class Main {
 
         GameProgress gameDeSerialized = null;
 
-        deSerialization("C://Games/savegames/packed_save1.dat.txt", gameDeSerialized);
+        deSerialization(savegamesFolder + File.separator + "packed_save1.dat.txt", gameDeSerialized);
 
     }
 
-    public static void creationDirectory(File directory, StringBuilder feedback) {
+    public static File creationDirectory(String path, StringBuilder feedback) {
+        File directory = new File(path);
         if (directory.mkdir()) {
             feedback.append("Каталог " + directory.getName() + " создан \n");
             System.out.println("Каталог " + directory.getName() + " создан");
         }
+        return directory;
     }
 
-    public static void creationFile(File myFile, StringBuilder feedback) {
+    public static File creationFile(String path, StringBuilder feedback) {
+        File file = new File(path);
         try {
-            if (myFile.createNewFile()) {
-                feedback.append("Файл" + myFile.getName() + " создан \n");
-                System.out.println("Файл" + myFile.getName() + " создан");
+            if (file.createNewFile()) {
+                feedback.append("Файл" + file.getName() + " создан \n");
+                System.out.println("Файл" + file.getName() + " создан");
             }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+        return file;
     }
 
     public static void saveGame(String path, GameProgress version) {
@@ -160,8 +150,8 @@ public class Main {
             while ((entry = zin.getNextEntry()) != null) {
                 name = entry.getName();
 
-                File f = new File("C://Games/savegames/"+name);
-                creationFile(f, feedback);
+                File f = creationFile("C:" + File.separator + File.separator + "Games" + File.separator
+                        + "savegames"+ File.separator +name, feedback);
 
                 FileOutputStream fout = new FileOutputStream(f);
                 for (int c = zin.read(); c != -1; c = zin.read()) {
